@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI 語音轉文字 MVP</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        #result {
+            white-space: pre-wrap;
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            min-height: 100px;
+        }
+
+        .loading {
+            color: blue;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>🎙️ 10分鐘語音轉文字測試</h2>
+    <div class="upload-area">
+        <input type="file" id="audioFile" accept="audio/*">
+        <button onclick="uploadFile()">開始辨識</button>
+    </div>
+
+    <div id="loading" class="loading">正在辨識中，請稍候... (10分鐘音訊約需1-2分鐘)</div>
+    <h3>辨識結果：</h3>
+    <div id="result">尚未上傳任何檔案</div>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('audioFile');
+            const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
+
+            if (!fileInput.files[0]) return alert("請先選擇檔案！");
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            loadingDiv.style.display = "block";
+            resultDiv.innerText = "處理中...";
+
+            try {
+                const response = await fetch('http://localhost:8000/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+
+                if (res.status === "success") {
+                    // 將結果整理成時間戳格式
+                    const text = res.data.map(item => `[${item.start}-${item.end}] ${item.text}`).join('\n');
+                    resultDiv.innerText = text;
+                } else {
+                    resultDiv.innerText = "辨識出錯：" + res.message;
+                }
+            } catch (error) {
+                resultDiv.innerText = "連線失敗，請檢查後端是否啟動。";
+            } finally {
+                loadingDiv.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
