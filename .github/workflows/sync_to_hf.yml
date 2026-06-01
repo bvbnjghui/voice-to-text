@@ -9,20 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # 升級到 v4 以解決 Node.js 警告
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
-      - name: Debug Token Existence
+      - name: Push to Hugging Face
         env:
-          MY_TEST_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          if [ -n "$MY_TEST_TOKEN" ]; then
-            echo "✅ GitHub 成功讀取到 Secret 了！"
-            # 這裡會印出 ***，代表變數存在且被保護著
-            echo "Token value is: $MY_TEST_TOKEN" 
-          else
-            echo "❌ GitHub 還是說沒看到 Secret，請檢查環境設定。"
-            exit 1
-          fi
+          # 請將下方的 YOUR_HF_USERNAME 與 YOUR_SPACE_NAME 改成你實際的 Hugging Face 帳號與空間名稱
+          git push --force https://bvbnjghui:$HF_TOKEN@huggingface.co/spaces/bvbnjghui/voice-to-text main
