@@ -19,4 +19,4 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           # 請將下方的 YOUR_HF_USERNAME 與 YOUR_SPACE_NAME 改成你實際的 Hugging Face 帳號與空間名稱
-          git push --force https://bvbnjghui:$HF_TOKEN@huggingface.co/spaces/bvbnjghui/voice-to-text main
+          git push --force https://bvbnjghui:$HF_TOKEN@huggingface.co/spaces/bvbnjghui/voice-to-text master
