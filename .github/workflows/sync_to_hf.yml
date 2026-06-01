@@ -1,8 +1,12 @@
 name: Sync to Hugging Face hub
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   workflow_dispatch:
+
+# 解決 2026 年 Node.js 20 淘汰警告的關鍵設定
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   sync-to-hub:
@@ -18,5 +22,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 請將下方的 YOUR_HF_USERNAME 與 YOUR_SPACE_NAME 改成你實際的 Hugging Face 帳號與空間名稱
-          git push --force https://bvbnjghui:$HF_TOKEN@huggingface.co/spaces/bvbnjghui/voice-to-text master
+          git push --force https://bvbnjghui:$HF_TOKEN@huggingface.co/spaces/bvbnjghui/voice-to-text HEAD:main
