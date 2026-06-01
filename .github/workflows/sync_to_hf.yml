@@ -14,16 +14,15 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Push to Hugging Face
+      - name: Debug Token Existence
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          MY_TEST_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 檢查 Token 是否有成功載入
-          if [ -z "$HF_TOKEN" ]; then
-            echo "Error: HF_TOKEN is missing! Please check your Repository Secrets."
+          if [ -n "$MY_TEST_TOKEN" ]; then
+            echo "✅ GitHub 成功讀取到 Secret 了！"
+            # 這裡會印出 ***，代表變數存在且被保護著
+            echo "Token value is: $MY_TEST_TOKEN" 
+          else
+            echo "❌ GitHub 還是說沒看到 Secret，請檢查環境設定。"
             exit 1
           fi
-          
-          # 執行推送 (請確保下方的使用者名稱和空間名正確)
-          git push --force https://bvbnjghui:$HF_TOKEN@huggingface.co/spaces/bvbnjghui/voice-to-text main
-        
